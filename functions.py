@@ -3,8 +3,7 @@ import tkinter.ttk as ttk
 import dbConnection
 
 
-def add():
-    # def daysCount():
+def add(): # def daysCount():
     #     days = 0
     #     if chkState_1.get() == 1:
     #         days = days + 1
@@ -262,5 +261,91 @@ def edit(a):
 
     editWindow.mainloop()
 
-# edit([('check', '1', '3', '2', '7', 'Pending')])
 
+def stats():
+    def showList(i, days, status):
+        tempWindow = tk.Tk()
+        if i==1:
+            p = dbConnection.dayInvitation(days)
+        elif i==2:
+            p =dbConnection.invitationStatus(status)
+        headerText = "Guests registered for " + days + "-day invitation"
+        header = tk.Label(tempWindow, text=headerText, font=('times', 20, 'bold'))
+        header.pack()
+        show(tempWindow, p)
+        searchbtn =tk.Button(tempWindow, text="search", width=10, height=2, command=search)
+        searchbtn.pack()
+        tempWindow.mainloop()
+
+    def onedayList():
+        showList(1, '1', '')
+
+    def twodayList():
+        showList(1, '2', '')
+
+    def threedayList():
+        showList(1, '3', '')
+
+    def statusInvited():
+        showList(2, '', 'Invited')
+
+    def statusPending():
+        showList(2, '', 'Pending')
+
+    def noOfGuests(a):
+        guests = 0
+        for item in a:
+            guests = guests + int(item[1])
+
+        return guests
+
+    statWindow = tk.Tk()
+    statWindow.title("Statistics")
+    statWindow.geometry("480x300")
+
+    header = tk.Label(statWindow, text="Take a look on your Stats!!", font=('times', 20, 'bold'))
+    header.pack(ipady=5)
+
+    label_1 = tk.Label(statWindow)
+    label_1_Result = "Total no of Guests Registered = " + str(noOfGuests(dbConnection.showAll()))
+    label_1.config(text=label_1_Result, font=("", 12, 'italic'))
+    label_1.place(x=50, y=60)
+
+    label_2 = tk.Label(statWindow)
+    label_2_Result = "No of Guests registered for 1-day invitation = " + str(noOfGuests(dbConnection.dayInvitation('1')))
+    label_2.config(text=label_2_Result, font=("", 10, ''))
+    label_2.place(x=80, y=100)
+    onedayButton = tk.Button(statWindow, text="view List", width=10, height=1, command=onedayList)
+    onedayButton.place(x=380, y=95)
+
+    label_3 = tk.Label(statWindow)
+    label_3_Result = "No of Guests registered for 2-day invitation = " + str(noOfGuests(dbConnection.dayInvitation('2')))
+    label_3.config(text=label_3_Result, font=("", 10, ''))
+    label_3.place(x=80, y=135)
+    twodayButton = tk.Button(statWindow, text="view List", width=10, height=1, command=twodayList)
+    twodayButton.place(x=380, y=130)
+
+    label_4 = tk.Label(statWindow)
+    label_4_Result = "No of Guests registered for 3-day invitation = " + str(noOfGuests(dbConnection.dayInvitation('2')))
+    label_4.config(text=label_4_Result, font=("", 10, ''))
+    label_4.place(x=80, y=170)
+    threedayButton = tk.Button(statWindow, text="view List", width=10, height=1, command=threedayList)
+    threedayButton.place(x=380, y=165)
+
+    label_5 = tk.Label(statWindow)
+    label_5_text = "Total number of guests invited = " + str(noOfGuests(dbConnection.invitationStatus('Invited')))
+    label_5.config(text=label_5_text, font=('times', 15, 'italic'))
+    label_5.place(x=50, y=230)
+    label_5_Btn = tk.Button(statWindow, text="View List", width=10, command=statusInvited)
+    label_5_Btn.place(x=380, y=225)
+
+    label_6 = tk.Label(statWindow)
+    label_6_text = "No of invitation Pending = " + str(noOfGuests(dbConnection.invitationStatus('Pending')))
+    label_6.config(text=label_6_text, font=('times', 15, 'italic'))
+    label_6.place(x=50, y=260)
+    label_6_Btn = tk.Button(statWindow, text="View List", width=10, command=statusPending)
+    label_6_Btn.place(x=380, y=255)
+
+    statWindow.mainloop()
+
+# stats()
