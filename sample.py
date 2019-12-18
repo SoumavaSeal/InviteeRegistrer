@@ -21,6 +21,9 @@ def homeWindow():
     def search():
         functions.search()
 
+    def showStats():
+        functions.stats()
+
     window = tk.Tk()
 
     window.title("Invitee Register")
@@ -39,10 +42,13 @@ def homeWindow():
     addbutton.place(x=100, y=625)
 
     updateButton = tk.Button(window, text="Update", command=updatedView, width=10, height=2)
-    updateButton.place(x=500, y=625)
+    updateButton.place(x=350, y=625)
 
     editButton = tk.Button(window, text="Search", command=search, width=10, height=2)
     editButton.place(x=900, y=625)
+
+    statButton = tk.Button(window, text="Show Stats", command=showStats, width=10, height=2)
+    statButton.place(x=600, y=625)
 
     window.mainloop()
 
