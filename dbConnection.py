@@ -30,6 +30,21 @@ def showAll():
     return p
 
 
+def dayInvitation(days):
+    curs = conn.cursor()
+    curs.execute("select * from invitee where daysInvited ='%s'" %days)
+    p = curs.fetchall()
+    return p
+
+
+def invitationStatus(status):
+    curs = conn.cursor()
+    curs.execute("select * from invitee where status ='%s'" % status)
+    p = curs.fetchall()
+    return p
+
+
+
 def searchByName(name):
     curs = conn.cursor()
     curs.execute("select * from invitee where familyName like '%" + name + "%'")
