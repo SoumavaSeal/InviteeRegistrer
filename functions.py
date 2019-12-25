@@ -1,20 +1,10 @@
 import tkinter as tk
 import tkinter.ttk as ttk
 import dbConnection
+from tkinter import messagebox
 
 
-def add(): # def daysCount():
-    #     days = 0
-    #     if chkState_1.get() == 1:
-    #         days = days + 1
-    #
-    #     if chkState_2.get() == 1:
-    #         days = days + 1
-    #
-    #     if chkState_3.get() == 1:
-    #         days = days + 1
-    #
-    #     return days
+def add():
 
     def addEntry():
 
@@ -93,12 +83,12 @@ def show(window, a):
     mylist.config(width=1080)
     mylist.bind("<Configure>", myfunction)
 
-    head_1 = tk.Label(mylist, width=35, text="Name", borderwidth=1, relief="solid", bg="orange")
-    head_2 = tk.Label(mylist, width=30, text="Number of Family Members", borderwidth=1, relief="solid", bg="orange")
-    head_3 = tk.Label(mylist, width=20, text="Days invited", borderwidth=1, relief="solid", bg="orange")
-    head_4 = tk.Label(mylist, width=30, text="Relation", borderwidth=1, relief="solid", bg="orange")
-    head_5 = tk.Label(mylist, width=15, text="Registration No.", borderwidth=1, relief="solid", bg="orange")
-    head_6 = tk.Label(mylist, width=25, text="Status", borderwidth=1, relief="solid", bg="orange")
+    head_1 = tk.Label(mylist, width=35, text="Name", borderwidth=1, relief="solid", bg="orange", font=('times', 10, 'bold'))
+    head_2 = tk.Label(mylist, width=30, text="Number of Family Members", borderwidth=1, relief="solid", bg="orange", font=('times', 10, 'bold'))
+    head_3 = tk.Label(mylist, width=20, text="Days invited", borderwidth=1, relief="solid", bg="orange", font=('times', 10, 'bold'))
+    head_4 = tk.Label(mylist, width=30, text="Relation", borderwidth=1, relief="solid", bg="orange", font=('times', 10, 'bold'))
+    head_5 = tk.Label(mylist, width=15, text="Registration No.", borderwidth=1, relief="solid", bg="orange", font=('times', 10, 'bold'))
+    head_6 = tk.Label(mylist, width=25, text="Status", borderwidth=1, relief="solid", bg="orange", font=('times', 10, 'bold'))
 
     head_1.grid(column=1, row=0)
     head_2.grid(column=2, row=0)
@@ -107,15 +97,14 @@ def show(window, a):
     head_5.grid(column=0, row=0)
     head_6.grid(column=5, row=0)
 
-    # col_1 = tk.Label(mylist,text="soumava")
 
     for i in range(len(a)):
-        col_1 = tk.Label(mylist, width=35, text=a[i][0], borderwidth=1, relief="solid")
-        col_2 = tk.Label(mylist, width=30, text=str(a[i][1]), borderwidth=1, relief="solid")
-        col_3 = tk.Label(mylist, width=20, text=str(a[i][2]), borderwidth=1, relief="solid")
-        col_4 = tk.Label(mylist, width=30, text=str(a[i][3]), borderwidth=1, relief="solid")
-        col_5 = tk.Label(mylist, width=15, text=str(a[i][4]), borderwidth=1, relief="solid")
-        col_6 = tk.Label(mylist, width=25, text=str(a[i][5]), borderwidth=1, relief="solid")
+        col_1 = tk.Label(mylist, width=35, text=a[i][0], borderwidth=1, relief="solid", font=('courier', 9, 'italic'))
+        col_2 = tk.Label(mylist, width=30, text=str(a[i][1]), borderwidth=1, relief="solid", font=('courier', 9, 'italic'))
+        col_3 = tk.Label(mylist, width=20, text=str(a[i][2]), borderwidth=1, relief="solid", font=('courier', 9, 'italic'))
+        col_4 = tk.Label(mylist, width=30, text=str(a[i][3]), borderwidth=1, relief="solid", font=('courier', 9, 'italic'))
+        col_5 = tk.Label(mylist, width=15, text=str(a[i][4]), borderwidth=1, relief="solid", font=('courier', 9, 'italic'))
+        col_6 = tk.Label(mylist, width=25, text=str(a[i][5]), borderwidth=1, relief="solid", font=('courier', 9, 'italic'))
 
         col_1.grid(column=1, row=1 + i)
         col_2.grid(column=2, row=1 + i)
@@ -124,16 +113,18 @@ def show(window, a):
         col_5.grid(column=0, row=1 + i)
         col_6.grid(column=5, row=1 + i)
 
-        # mylist.insert(tk.END, col_1.cget('text'))
 
-    # mylist.pack(fill=tk.X)
-    # scrollbar.config(command=mylist.yview)
-
-
-def search():
+def search(i, days, status):
     def searchResults():
         name = promtInput.get()
-        a = dbConnection.searchByName(name)
+        if i == 'all':
+            a = dbConnection.searchByName(name)
+
+        elif i == 'partialDay':
+            a = dbConnection.partialSearch(1, days, '', name)
+        elif i == 'partialStatus':
+            a = dbConnection.partialSearch(2, '', status, name)
+
         searchWindow.destroy()
 
         def editInitialize():
@@ -163,15 +154,35 @@ def search():
 
                 tempWindow2.mainloop()
 
-        tempWindow = tk.Tk()
+        if len(a) == 0:
 
-        header = tk.Label(tempWindow, text="Search Results", font=2)
-        header.pack()
-        show(tempWindow, a)
-        editButton = tk.Button(tempWindow, text='Edit', width=10, height=2, command=editInitialize)
-        editButton.pack()
+            if i == 'all':
+                messagebox.showinfo('Alert', 'No results found')
+            else:
+                def ok():
+                    tempWin.destroy()
 
-        tempWindow.mainloop()
+                tempWin = tk.Tk()
+                tempWin.geometry("300x120")
+                tempWin.title("Alert!!")
+                heading = tk.Label(tempWin, text="No results Found!!", font=('times', 15, 'normal'))
+                heading.place(x=80, y=30)
+                cancelbtn = tk.Button(tempWin, text='OK', command=ok, width=7, height=1)
+                cancelbtn.place(x=120, y=70)
+                tempWin.mainloop()
+
+        else:
+            tempWindow = tk.Tk()
+
+            header = tk.Label(tempWindow, text="Search Results", font=2)
+            header.pack()
+
+            show(tempWindow, a)
+
+            editButton = tk.Button(tempWindow, text='Edit', width=10, height=2, command=editInitialize)
+            editButton.pack()
+
+            tempWindow.mainloop()
 
     searchWindow = tk.Tk()
 
@@ -262,20 +273,117 @@ def edit(a):
     editWindow.mainloop()
 
 
+def editAsList(a):
+    def saveValues():
+        for i in range(len(a)):
+            values = [a[i][0], a[i][1], a[i][2], a[i][3], a[i][4], status[i].get()]
+            dbConnection.updateEntry(values)
+
+        messagebox.showinfo('Info', 'Your changes have been saved!')
+        Statuswindow.after(1, lambda: Statuswindow.focus_force())
+
+    def exit():
+        Statuswindow.destroy()
+
+    def myfunction(event):
+        canvas.configure(scrollregion=canvas.bbox("all"), height=493, width=1080)
+
+    Statuswindow = tk.Tk()
+    myframe = tk.Frame(Statuswindow, bd=1)
+    myframe.pack(fill=tk.X, ipady=20)
+
+    canvas = tk.Canvas(myframe)
+
+    mylist = tk.Frame(canvas, width=1080)
+
+    myscrollbar = tk.Scrollbar(myframe, orient="vertical", command=canvas.yview)
+    canvas.configure(yscrollcommand=myscrollbar.set)
+    myscrollbar.pack(side=tk.RIGHT, fill=tk.Y)
+    canvas.pack(side=tk.LEFT, fill=tk.X)
+    canvas.create_window((0, 0), window=mylist, anchor='nw')
+    mylist.config(width=1080)
+    mylist.bind("<Configure>", myfunction)
+
+    head_1 = tk.Label(mylist, width=35, text="Name", borderwidth=1, relief="solid", bg="orange", font=('times', 10, 'bold'))
+    head_2 = tk.Label(mylist, width=30, text="Number of Family Members", borderwidth=1, relief="solid", bg="orange", font=('times', 10, 'bold'))
+    head_3 = tk.Label(mylist, width=20, text="Days invited", borderwidth=1, relief="solid", bg="orange", font=('times', 10, 'bold'))
+    head_4 = tk.Label(mylist, width=30, text="Relation", borderwidth=1, relief="solid", bg="orange", font=('times', 10, 'bold'))
+    head_5 = tk.Label(mylist, width=15, text="Registration No.", borderwidth=1, relief="solid", bg="orange", font=('times', 10, 'bold'))
+    head_6 = tk.Label(mylist, width=25, text="Status", borderwidth=1, relief="solid", bg="orange", font=('times', 10, 'bold'))
+
+    head_1.grid(column=1, row=0)
+    head_2.grid(column=2, row=0)
+    head_3.grid(column=3, row=0)
+    head_4.grid(column=4, row=0)
+    head_5.grid(column=0, row=0)
+    head_6.grid(column=5, row=0)
+
+    status = [None] * len(a)
+
+    for i in range(len(a)):
+        familyName = tk.Label(mylist, width=35, text=a[i][0], borderwidth=1, relief="solid", font=('courier', 9, 'italic'))
+        col_2 = tk.Label(mylist, width=30, text=str(a[i][1]), borderwidth=1, relief="solid", font=('courier', 9, 'italic'))
+        col_3 = tk.Label(mylist, width=20, text=str(a[i][2]), borderwidth=1, relief="solid", font=('courier', 9, 'italic'))
+        col_4 = tk.Label(mylist, width=30, text=str(a[i][3]), borderwidth=1, relief="solid", font=('courier', 9, 'italic'))
+        col_5 = tk.Label(mylist, width=15, text=str(a[i][4]), borderwidth=1, relief="solid", font=('courier', 9, 'italic'))
+        StatusText = tk.Entry(mylist)
+        # status = [None]*len(a)
+        status[i] = ttk.Combobox(StatusText, width=15)
+        status[i]['values'] = ('Pending', 'Invited', "Invited but will not come")
+
+        index = 0
+        while status[i]['values'][index] != a[i][5]:
+            index = index + 1
+
+        status[i].current(index)
+
+        familyName.grid(column=1, row=1 + i)
+        col_2.grid(column=2, row=1 + i)
+        col_3.grid(column=3, row=1 + i)
+        col_4.grid(column=4, row=1 + i)
+        col_5.grid(column=0, row=1 + i)
+        # col_6.grid(column=5, row=1 + i)
+        StatusText.grid(column=5, row=i+1)
+        status[i].grid(column=5, row=i + 1)
+
+    saveButton = tk.Button(Statuswindow, text='save', command=saveValues, width=10, height=2)
+    saveButton.pack()
+
+    exitButton = tk.Button(Statuswindow, text='Exit', command=exit, width=10, height=2)
+    exitButton.pack()
+
+    Statuswindow.mainloop()
+
+
 def stats():
     def showList(i, days, status):
+
+        def partialSearch():
+
+            if i == 1:
+                search('partialDay', days, '')
+
+            elif i == 2:
+                search('partialStatus', '', status)
+
         tempWindow = tk.Tk()
         if i==1:
             p = dbConnection.dayInvitation(days)
+            headerText = "Guests registered for " + days + "-day invitation"
         elif i==2:
             p =dbConnection.invitationStatus(status)
-        headerText = "Guests registered for " + days + "-day invitation"
+            if status == 'Invited':
+                headerText = "Guests Invited"
+            elif status == 'Pending':
+                headerText = "Guests yet to be Invited"
+
         header = tk.Label(tempWindow, text=headerText, font=('times', 20, 'bold'))
         header.pack()
         show(tempWindow, p)
-        searchbtn =tk.Button(tempWindow, text="search", width=10, height=2, command=search)
+        searchbtn =tk.Button(tempWindow, text="search", width=10, height=2, command=partialSearch)
         searchbtn.pack()
         tempWindow.mainloop()
+
 
     def onedayList():
         showList(1, '1', '')
@@ -303,7 +411,7 @@ def stats():
     statWindow.title("Statistics")
     statWindow.geometry("480x300")
 
-    header = tk.Label(statWindow, text="Take a look on your Stats!!", font=('times', 20, 'bold'))
+    header = tk.Label(statWindow, text="Take a look on your Stats!!", font=('courier', 20, 'bold'))
     header.pack(ipady=5)
 
     label_1 = tk.Label(statWindow)
@@ -326,7 +434,7 @@ def stats():
     twodayButton.place(x=380, y=130)
 
     label_4 = tk.Label(statWindow)
-    label_4_Result = "No of Guests registered for 3-day invitation = " + str(noOfGuests(dbConnection.dayInvitation('2')))
+    label_4_Result = "No of Guests registered for 3-day invitation = " + str(noOfGuests(dbConnection.dayInvitation('3')))
     label_4.config(text=label_4_Result, font=("", 10, ''))
     label_4.place(x=80, y=170)
     threedayButton = tk.Button(statWindow, text="view List", width=10, height=1, command=threedayList)
@@ -347,5 +455,3 @@ def stats():
     label_6_Btn.place(x=380, y=255)
 
     statWindow.mainloop()
-
-# stats()
