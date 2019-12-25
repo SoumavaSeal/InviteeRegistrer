@@ -44,7 +44,6 @@ def invitationStatus(status):
     return p
 
 
-
 def searchByName(name):
     curs = conn.cursor()
     curs.execute("select * from invitee where familyName like '%" + name + "%'")
@@ -89,3 +88,19 @@ def updateEntry(values):
         "' where registrationNo = '" + values[4] + "'"
     curs.execute(query)
     conn.commit()
+
+
+def partialSearch(i, days, status, name):
+    curs = conn.cursor()
+    if i == 1:
+        curs.execute("select * from invitee where daysInvited = '" + days + "' and familyName like '%" + name + "%'")
+        a = curs.fetchall()
+        return a
+    elif i == 2:
+        curs.execute("select * from invitee where status = '" + status + "' and familyName like '%" + name + "%'")
+        a = curs.fetchall()
+        return a
+
+    conn.commit()
+
+
