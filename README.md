@@ -1,6 +1,6 @@
 # InviteeRegistrer
 
-#version 1.0
+# version 1.0
   
   1. You can register the names of the people you want to invite for a occassion
   2. you can edit them whenever you want.
